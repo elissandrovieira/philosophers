@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 05:41:37 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/02/21 11:04:35 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/02/23 14:17:55 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,10 @@ pthread_t	*get_philos(int n_of_philos, pthread_mutex_t *forks)
 	while (i < n_of_philos)
 	{
 		personal_forks[i].right = forks[i];
-		personal_forks[i].left = forks[i + 1];
+		if (i == n_of_philos - 1)
+			personal_forks[i].left = forks[0];
+		else
+			personal_forks[i].left = forks[i + 1];
 		pthread_create(init_philos, NULL, philo_routine, (void *)&personal_forks[i]);
 		i++;
 	}
