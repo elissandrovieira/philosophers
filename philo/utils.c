@@ -1,32 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.h                                     :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/21 05:45:44 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/02/25 03:30:24 by eteofilo         ###   ########.fr       */
+/*   Created: 2025/02/24 19:36:01 by eteofilo          #+#    #+#             */
+/*   Updated: 2025/02/24 19:36:05 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILOSOPHERS_H
-# define PHILOSOPHERS_H
-
-# include <pthread.h>
-# include <stdlib.h>
-# include <unistd.h>
-# include <stdio.h>
-
-typedef struct s_data
+int	ft_atoi(const char *nptr)
 {
-	pthread_mutex_t	lock_forks;
-	unsigned int	id;
-	unsigned int	*fork_r;
-	unsigned int	*fork_l;
-}	t_data;
+	int	i;
+	int	n;
+	int	signal;
 
-int	ft_atoi(const char *nptr);
-
-
-#endif
+	if (!nptr)
+		return (0);
+	i = 0;
+	n = 0;
+	signal = 1;
+	while ((nptr[i] >= 9 && nptr[i] <= 13) || nptr[i] == 32)
+		i++;
+	if (nptr[i] == '-' || nptr[i] == '+')
+	{
+		if (nptr[i] == '-')
+			signal = -1;
+		i++;
+	}
+	while (nptr[i] >= 48 && nptr[i] <= 57)
+	{
+		n = (n * 10) + nptr[i] - 48;
+		i++;
+	}
+	return (n * signal);
+}

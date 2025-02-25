@@ -6,64 +6,41 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 05:41:37 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/02/23 14:17:55 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/02/25 06:14:18 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	ft_atoi(const char *nptr)
-{
-	int	i;
-	int	n;
-	int	signal;
-
-	if (!nptr)
-		return (0);
-	i = 0;
-	n = 0;
-	signal = 1;
-	while ((nptr[i] >= 9 && nptr[i] <= 13) || nptr[i] == 32)
-		i++;
-	if (nptr[i] == '-' || nptr[i] == '+')
-	{
-		if (nptr[i] == '-')
-			signal = -1;
-		i++;
-	}
-	while (nptr[i] >= 48 && nptr[i] <= 57)
-	{
-		n = (n * 10) + nptr[i] - 48;
-		i++;
-	}
-	return (n * signal);
-}
-
 void *philo_routine(void *arg)
 {
-	pthread_t		id;
-	t_forks		*forks;
+	t_data		*philo_data;
+	int			is_unlocked;
 
-	id = pthread_self();
-	forks = (t_forks *)arg;
-	if((id % 2) == 0)
+	philo_data = (t_data *)arg;
+	is_unlocked = 0;
+	if((philo_data->id % 2) == 0)
 	{
-		pthread_mutex_lock(&forks->right);
-		pthread_mutex_lock(&forks->left);
+		pthread_mutex_lock(&philo_data->fork_r);
+		if (pthread_mutex_lock(&philo_data->fork_l) != 0)
+		{
+			pthread_mutex_unlock(&philo_data->fork_r);
+			is_unlocked = 1;
+		}
 		usleep(10000);
-		printf("%lu | rangando\n", id);
-		pthread_mutex_unlock(&forks->right);
-		pthread_mutex_unlock(&forks->left);
+		printf("%u | rangando\n", philo_data->id);
+		pthread_mutex_unlock(&philo_data->fork_r);
+		pthread_mutex_unlock(&philo_data->fork_l);
 	}
 	else
 	{
 
-		pthread_mutex_lock(&forks->left);
-		pthread_mutex_lock(&forks->right);
+		pthread_mutex_lock(&philo_data->fork_l);
+		pthread_mutex_lock(&philo_data->fork_r);
 		usleep(10000);
-		printf("%lu | rangando\n", id);
-		pthread_mutex_unlock(&forks->left);
-		pthread_mutex_unlock(&forks->right);
+		printf("%u | rangando\n", philo_data->id);
+		pthread_mutex_unlock(&philo_data->fork_l);
+		pthread_mutex_unlock(&philo_data->fork_r);
 	}
 	return(NULL);
 }
@@ -92,20 +69,22 @@ pthread_mutex_t *get_forks(int n_of_forks)
 pthread_t	*get_philos(int n_of_philos, pthread_mutex_t *forks)
 {
 	pthread_t	*init_philos;
-	t_forks		*personal_forks;
+	t_data		*philo_data;
 	int			i;
 
 	i = 0;
 	init_philos = malloc(sizeof(pthread_t) * n_of_philos);
-	personal_forks = malloc(sizeof(t_forks) * n_of_philos);
+	philo_data = malloc(sizeof(t_data) * n_of_philos);
+
 	while (i < n_of_philos)
 	{
-		personal_forks[i].right = forks[i];
+		philo_data[i].id = i;
+		philo_data[i].fork_r = forks[i];
 		if (i == n_of_philos - 1)
-			personal_forks[i].left = forks[0];
+			philo_data[i].fork_l = forks[0];
 		else
-			personal_forks[i].left = forks[i + 1];
-		pthread_create(init_philos, NULL, philo_routine, (void *)&personal_forks[i]);
+			philo_data[i].fork_l = forks[i + 1];
+		pthread_create(init_philos, NULL, philo_routine, (void *)&philo_data[i]);
 		i++;
 	}
 
