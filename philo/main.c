@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 05:41:37 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/02/25 06:14:18 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/11 12:26:23 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,8 @@ pthread_t	*get_philos(int n_of_philos, pthread_mutex_t *forks)
 	return (init_philos);
 }
 
+//a.out 5 200 200 100 [5]
+
 int	main(int ac, char **av)
 {
 	pthread_mutex_t *forks;
@@ -98,7 +100,11 @@ int	main(int ac, char **av)
 	int				n_of_philos;
 	int				i;
 
-	(void)ac;
+	if (ac != 5 || ac != 6)
+	{
+		input_error("Invalid inputs");
+		return (INPUT_ERROR);
+	}
 
 	n_of_philos = ft_atoi(av[1]);
 	forks = get_forks(n_of_philos);
