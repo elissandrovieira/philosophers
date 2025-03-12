@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 12:27:03 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/12 01:11:09 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/12 01:05:12 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,6 @@ void *philo_routine(void *arg)
 	philo_data->dining->sync_n++;
 	pthread_mutex_unlock(&philo_data->dining->sync);
 	while(philo_data->dining->sync_n != philo_data->dining->number_of_philos)
-	{
-		usleep(1);
-	}
 	if((philo_data->id % 2) != 0)
 		usleep(philo_data->dining->time_to_eat / 2);
 	pthread_mutex_lock(philo_data->fork_r);

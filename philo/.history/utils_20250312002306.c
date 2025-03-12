@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:36:01 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/12 00:24:07 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/12 00:23:06 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	ft_atoi(const char *nptr)
 {
 	int	i;
 	int	n;
+	int	signal;
 
 	if (!nptr)
 		return (INVALID_INPUT);
@@ -28,7 +29,7 @@ int	ft_atoi(const char *nptr)
 	}
 	if(nptr[i] != '\0')
 		return (INVALID_INPUT);
-	return (n);
+	return (n * signal);
 }
 
 int input_error(char *string)
@@ -49,6 +50,8 @@ int input_parser(int ac, char **av, t_dining_data	*dining)
 		dining->number_of_meals = ft_atoi(av[5]);
 	else
 		dining->number_of_meals = INVALID_INPUT;
+
+	printf("philos: %u\ndie: %u\neat: %u\nsleep: %u\nmeals: %i\n", dining->number_of_philos, dining->time_to_die, dining->time_to_eat, dining->time_to_sleep, dining->number_of_meals);
 	if (
 		ac == 6 && dining->number_of_meals == INVALID_INPUT
 		|| dining->number_of_philos == INVALID_INPUT

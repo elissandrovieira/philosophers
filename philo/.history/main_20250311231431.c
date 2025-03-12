@@ -1,0 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/11 12:27:03 by eteofilo          #+#    #+#             */
+/*   Updated: 2025/03/11 23:14:30 by eteofilo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+//a.out 5 800 200 200 [5]
+//a.out philos die eat sleep [meals]
+
+#include "philo.h"
+
+int main(int ac, char **av)
+{
+	if (ac != 5 || ac != 6)
+	{
+		return(input_error("Invalid number of argument"));
+	}
+	parse(ac, av);
+	return(0);
+}

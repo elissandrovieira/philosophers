@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:36:01 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/12 00:24:07 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/11 23:55:42 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	ft_atoi(const char *nptr)
 {
 	int	i;
 	int	n;
+	int	signal;
 
 	if (!nptr)
 		return (INVALID_INPUT);
@@ -26,9 +27,9 @@ int	ft_atoi(const char *nptr)
 		n = (n * 10) + nptr[i] - 48;
 		i++;
 	}
-	if(nptr[i] != '\0')
+	if(nptr[i] != '/0')
 		return (INVALID_INPUT);
-	return (n);
+	return (n * signal);
 }
 
 int input_error(char *string)
@@ -39,7 +40,7 @@ int input_error(char *string)
 	return (0);
 }
 
-int input_parser(int ac, char **av, t_dining_data	*dining)
+int *input_parser(int ac, char **av, t_dining_data	*dining)
 {
 	dining->number_of_philos = ft_atoi(av[1]);
 	dining->time_to_die = ft_atoi(av[2]);
@@ -50,11 +51,11 @@ int input_parser(int ac, char **av, t_dining_data	*dining)
 	else
 		dining->number_of_meals = INVALID_INPUT;
 	if (
-		ac == 6 && dining->number_of_meals == INVALID_INPUT
-		|| dining->number_of_philos == INVALID_INPUT
-		|| dining->time_to_die == INVALID_INPUT
-		|| dining->time_to_eat == INVALID_INPUT
-		|| dining->time_to_sleep == INVALID_INPUT
+		ac == 6 && dining->number_of_meals < 0
+		|| dining->number_of_philos < 0
+		|| dining->time_to_die < 0
+		|| dining->time_to_eat < 0
+		|| dining->time_to_sleep < 0
 	)
 		return (INVALID_INPUT);
 	return (0);

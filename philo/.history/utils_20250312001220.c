@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:36:01 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/12 00:24:07 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/12 00:12:20 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	ft_atoi(const char *nptr)
 {
 	int	i;
 	int	n;
+	int	signal;
 
 	if (!nptr)
 		return (INVALID_INPUT);
@@ -28,7 +29,7 @@ int	ft_atoi(const char *nptr)
 	}
 	if(nptr[i] != '\0')
 		return (INVALID_INPUT);
-	return (n);
+	return (n * signal);
 }
 
 int input_error(char *string)
