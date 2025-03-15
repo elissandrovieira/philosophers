@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:36:01 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/12 00:24:07 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/15 13:46:56 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,21 @@ int input_parser(int ac, char **av, t_dining_data	*dining)
 	else
 		dining->number_of_meals = INVALID_INPUT;
 	if (
-		ac == 6 && dining->number_of_meals == INVALID_INPUT
-		|| dining->number_of_philos == INVALID_INPUT
-		|| dining->time_to_die == INVALID_INPUT
-		|| dining->time_to_eat == INVALID_INPUT
-		|| dining->time_to_sleep == INVALID_INPUT
+		(ac == 6 && dining->number_of_meals == INVALID_INPUT)
+		|| ((int)dining->number_of_philos == INVALID_INPUT)
+		|| ((int)dining->time_to_die == INVALID_INPUT)
+		|| ((int)dining->time_to_eat == INVALID_INPUT)
+		|| ((int)dining->time_to_sleep == INVALID_INPUT)
 	)
 		return (INVALID_INPUT);
 	return (0);
+}
+
+long long	get_time(long long start_time)
+{
+	struct timeval	tv;
+
+	if (gettimeofday(&tv, NULL))
+		return (0);
+	return (((tv.tv_sec * (long long)1000) + (tv.tv_usec / 1000)) - start_time);
 }
