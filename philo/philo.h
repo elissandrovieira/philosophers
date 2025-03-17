@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 05:45:44 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/15 13:46:03 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/17 19:49:58 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ typedef struct  s_dining_data
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
 	int				number_of_meals;
+	int				is_enough;
+	pthread_mutex_t	get_enough;
 	int				sync_n;
 	pthread_mutex_t	sync;
 	t_fork			*forks;
@@ -61,6 +63,8 @@ int	ft_atoi(const char *nptr);
 int input_error(char *string);
 int input_parser(int ac, char **av, t_dining_data	*dining);
 long long	get_time(long long start_time);
-
+void	time_to_act(int action);
+int	init_mutexes(t_dining_data *dining);
+int	is_died(t_dining_data *dining);
 
 #endif

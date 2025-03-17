@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:36:01 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/15 13:46:56 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/17 19:50:04 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int input_parser(int ac, char **av, t_dining_data	*dining)
 	dining->time_to_sleep = ft_atoi(av[4]);
 	if (ac == 6)
 		dining->number_of_meals = ft_atoi(av[5]);
-	else
+	else if (ac == 5)
 		dining->number_of_meals = INVALID_INPUT;
 	if (
 		(ac == 6 && dining->number_of_meals == INVALID_INPUT)
@@ -67,4 +67,37 @@ long long	get_time(long long start_time)
 	if (gettimeofday(&tv, NULL))
 		return (0);
 	return (((tv.tv_sec * (long long)1000) + (tv.tv_usec / 1000)) - start_time);
+}
+
+void	time_to_act(int action)
+{
+	long long end_time = get_time(0) + action;
+	while (get_time(0) < end_time)
+		usleep(100);
+}
+
+int	init_mutexes(t_dining_data *dining)
+{
+	if (pthread_mutex_init(&dining->sync, NULL) != 0
+		|| pthread_mutex_init(&dining->get_enough, NULL) != 0
+	)
+	{
+		write(1, "Error\n", 6);
+			pthread_mutex_destroy(&dining->sync);
+			pthread_mutex_destroy(&dining->get_enough);
+		return (false);
+	};
+	return (true);
+}
+
+int	is_died(t_dining_data *dining)
+{
+	pthread_mutex_lock(&dining->get_enough);
+	if (dining->is_enough == true)
+	{
+		pthread_mutex_unlock(&dining->get_enough);
+		return (true);
+	}
+	pthread_mutex_unlock(&dining->get_enough);
+	return (false);
 }

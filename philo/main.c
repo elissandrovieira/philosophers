@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 12:27:03 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/15 13:47:51 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/17 19:52:59 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,32 +31,48 @@ void *philo_routine(void *arg)
 	}
 	start_time = philo_data->dining->start_time;
 	if((philo_data->id % 2) != 0)
-		usleep(philo_data->dining->time_to_eat / 2);
-	while (i < 5)
+		time_to_act(philo_data->dining->time_to_eat);
+	while (1)
 	{
 		if (philo_data->last_meal_time != 0 && get_time(philo_data->last_meal_time) > philo_data->dining->time_to_die)
 		{
-			//printf("%u last_meal_time: %lli\n", philo_data->id, get_time() - philo_data->last_meal_time);
-			printf("%lli %u die\n", get_time(start_time), philo_data->id);
+			if (philo_data->dining->is_enough == true)
+				break;
+			printf("%lli %u died\n", get_time(start_time), philo_data->id);
+			pthread_mutex_lock(&philo_data->dining->get_enough);
+			philo_data->dining->is_enough = true;
+			pthread_mutex_unlock(&philo_data->dining->get_enough);
 			break;
 		}
 		if (philo_data->fork_l->is_in_use == true || philo_data->fork_r->is_in_use == true)
+		{
+			if (philo_data->dining->is_enough == true)
+				break;
 			printf("%lli %u is thinking\n", get_time(start_time), philo_data->id);
+		}
 		pthread_mutex_lock(&philo_data->fork_r->fork);
 		philo_data->fork_r->is_in_use = true;
+		if (is_died(philo_data->dining))
+				break;
 		printf("%lli %u has taken a fork\n", get_time(start_time), philo_data->id);
 		pthread_mutex_lock(&philo_data->fork_l->fork);
 		philo_data->fork_l->is_in_use = true;
+		if (is_died(philo_data->dining))
+				break;
 		printf("%lli %u has taken a fork\n", get_time(start_time), philo_data->id);
 		philo_data->last_meal_time = get_time(0);
+		if (is_died(philo_data->dining))
+				break;
 		printf("%lli %u is eating\n", get_time(start_time), philo_data->id);
-		usleep(philo_data->dining->time_to_eat * 1000);
+		time_to_act(philo_data->dining->time_to_eat);
 		philo_data->fork_r->is_in_use = false;
 		pthread_mutex_unlock(&philo_data->fork_r->fork);
 		philo_data->fork_l->is_in_use = false;
 		pthread_mutex_unlock(&philo_data->fork_l->fork);
+		if (is_died(philo_data->dining))
+				break;
 		printf("%lli %u is sleeping\n", get_time(start_time), philo_data->id);
-		usleep(philo_data->dining->time_to_sleep * 1000);
+		time_to_act(philo_data->dining->time_to_sleep);
 		i++;
 	}
 	return(NULL);
@@ -124,7 +140,13 @@ int main(int ac, char **av)
 	{
 		return(input_error("Invalid arguments"));
 	}
+	if (!init_mutexes(dining))
+	{
+		free(dining);
+		return(0);
+	}
 	dining->sync_n = 0;
+	dining->is_enough = false;
 	dining->forks = get_forks(dining->number_of_philos);
 	dining->start_time = get_time(0);
 	philos = get_philos(dining->number_of_philos, dining);
