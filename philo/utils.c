@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:36:01 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/17 19:50:04 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/19 22:57:45 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,6 @@ int input_parser(int ac, char **av, t_dining_data	*dining)
 	return (0);
 }
 
-long long	get_time(long long start_time)
-{
-	struct timeval	tv;
-
-	if (gettimeofday(&tv, NULL))
-		return (0);
-	return (((tv.tv_sec * (long long)1000) + (tv.tv_usec / 1000)) - start_time);
-}
-
 void	time_to_act(int action)
 {
 	long long end_time = get_time(0) + action;
@@ -76,28 +67,19 @@ void	time_to_act(int action)
 		usleep(100);
 }
 
-int	init_mutexes(t_dining_data *dining)
+void run_dining(t_philo_data *philo_data, long long start_time)
 {
-	if (pthread_mutex_init(&dining->sync, NULL) != 0
-		|| pthread_mutex_init(&dining->get_enough, NULL) != 0
-	)
+	while (1)
 	{
-		write(1, "Error\n", 6);
-			pthread_mutex_destroy(&dining->sync);
-			pthread_mutex_destroy(&dining->get_enough);
-		return (false);
-	};
-	return (true);
-}
-
-int	is_died(t_dining_data *dining)
-{
-	pthread_mutex_lock(&dining->get_enough);
-	if (dining->is_enough == true)
-	{
-		pthread_mutex_unlock(&dining->get_enough);
-		return (true);
+		if (get_died(philo_data->dining))
+			break;
+		if (set_died(philo_data, start_time))
+			break;
+		if (!set_thinking(philo_data, start_time))
+			break;
+		if (!set_eating(philo_data, start_time))
+			break;
+		if (!set_sleeping(philo_data, start_time))
+			break;
 	}
-	pthread_mutex_unlock(&dining->get_enough);
-	return (false);
 }

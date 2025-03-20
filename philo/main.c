@@ -6,126 +6,11 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 12:27:03 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/17 19:52:59 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/19 23:41:26 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//a.out 5 800 200 200 [5]
-//a.out philos die eat sleep [meals]
-
 #include "philo.h"
-
-void *philo_routine(void *arg)
-{
-	t_philo_data		*philo_data;
-	int			i = 0;
-	long long			start_time;
-
-	philo_data = (t_philo_data *)arg;
-	pthread_mutex_lock(&philo_data->dining->sync);
-	philo_data->dining->sync_n++;
-	pthread_mutex_unlock(&philo_data->dining->sync);
-	while(philo_data->dining->sync_n != (int)philo_data->dining->number_of_philos)
-	{
-		usleep(0);
-	}
-	start_time = philo_data->dining->start_time;
-	if((philo_data->id % 2) != 0)
-		time_to_act(philo_data->dining->time_to_eat);
-	while (1)
-	{
-		if (philo_data->last_meal_time != 0 && get_time(philo_data->last_meal_time) > philo_data->dining->time_to_die)
-		{
-			if (philo_data->dining->is_enough == true)
-				break;
-			printf("%lli %u died\n", get_time(start_time), philo_data->id);
-			pthread_mutex_lock(&philo_data->dining->get_enough);
-			philo_data->dining->is_enough = true;
-			pthread_mutex_unlock(&philo_data->dining->get_enough);
-			break;
-		}
-		if (philo_data->fork_l->is_in_use == true || philo_data->fork_r->is_in_use == true)
-		{
-			if (philo_data->dining->is_enough == true)
-				break;
-			printf("%lli %u is thinking\n", get_time(start_time), philo_data->id);
-		}
-		pthread_mutex_lock(&philo_data->fork_r->fork);
-		philo_data->fork_r->is_in_use = true;
-		if (is_died(philo_data->dining))
-				break;
-		printf("%lli %u has taken a fork\n", get_time(start_time), philo_data->id);
-		pthread_mutex_lock(&philo_data->fork_l->fork);
-		philo_data->fork_l->is_in_use = true;
-		if (is_died(philo_data->dining))
-				break;
-		printf("%lli %u has taken a fork\n", get_time(start_time), philo_data->id);
-		philo_data->last_meal_time = get_time(0);
-		if (is_died(philo_data->dining))
-				break;
-		printf("%lli %u is eating\n", get_time(start_time), philo_data->id);
-		time_to_act(philo_data->dining->time_to_eat);
-		philo_data->fork_r->is_in_use = false;
-		pthread_mutex_unlock(&philo_data->fork_r->fork);
-		philo_data->fork_l->is_in_use = false;
-		pthread_mutex_unlock(&philo_data->fork_l->fork);
-		if (is_died(philo_data->dining))
-				break;
-		printf("%lli %u is sleeping\n", get_time(start_time), philo_data->id);
-		time_to_act(philo_data->dining->time_to_sleep);
-		i++;
-	}
-	return(NULL);
-}
-
-t_fork *get_forks(int n_of_forks)
-{
-	t_fork	*forks;
-	int				i;
-
-	i = 0;
-	forks = malloc(sizeof(t_fork) * n_of_forks);
-	while(i < n_of_forks)
-	{
-		if (pthread_mutex_init(&forks[i++].fork, NULL) != 0)
-		{
-			write(1, "Error\n", 6);
-			while (i)
-				pthread_mutex_destroy(&forks[i--].fork);
-			free(forks);
-			return (NULL);
-		};
-		forks->is_in_use = 0;
-	}
-	return (forks);
-}
-
-pthread_t	*get_philos(int n_of_philos, t_dining_data *dining)
-{
-	pthread_t		*philos;
-	t_philo_data	*philo_data;
-	int				i;
-
-	i = 0;
-	philos = malloc(sizeof(pthread_t) * n_of_philos);
-	philo_data = malloc(sizeof(t_philo_data) * n_of_philos);
-
-	while (i < n_of_philos)
-	{
-		philo_data[i].id = i + 1;
-		philo_data[i].dining = dining;
-		philo_data[i].fork_r = &dining->forks[i];
-		philo_data[i].last_meal_time = 0;
-		if (i == n_of_philos - 1)
-			philo_data[i].fork_l = &dining->forks[0];
-		else
-			philo_data[i].fork_l = &dining->forks[i + 1];
-		pthread_create(philos, NULL, philo_routine, (void *)&philo_data[i]);
-		i++;
-	}
-
-	return (philos);
-}
 
 int main(int ac, char **av)
 {
@@ -140,7 +25,7 @@ int main(int ac, char **av)
 	{
 		return(input_error("Invalid arguments"));
 	}
-	if (!init_mutexes(dining))
+	if (!set_mutexes(dining))
 	{
 		free(dining);
 		return(0);

@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 05:45:44 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/17 19:49:58 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/19 22:56:22 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,20 @@ typedef struct s_philo_data
 int	ft_atoi(const char *nptr);
 int input_error(char *string);
 int input_parser(int ac, char **av, t_dining_data	*dining);
+t_fork *get_forks(int n_of_forks);
+pthread_t	*get_philos(int n_of_philos, t_dining_data *dining);
 long long	get_time(long long start_time);
-void	time_to_act(int action);
-int	init_mutexes(t_dining_data *dining);
-int	is_died(t_dining_data *dining);
+int	set_mutexes(t_dining_data *dining);
 
+void run_dining(t_philo_data *philo_data, long long start_time);
+
+void	time_to_act(int action);
+int	get_died(t_dining_data *dining);
+int take_forks (t_philo_data *philo_data, long long start_time);
+void leave_forks (t_philo_data *philo_data);
+
+int	set_died(t_philo_data *philo_data, long long start_time);
+int set_thinking (t_philo_data *philo_data, long long start_time);
+int set_eating (t_philo_data *philo_data, long long start_time);
+int set_sleeping (t_philo_data *philo_data, long long start_time);
 #endif
