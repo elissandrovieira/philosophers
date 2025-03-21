@@ -6,23 +6,22 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:49:28 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/20 19:13:14 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/19 23:15:36 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	*philo_routine(void *arg)
+static void *philo_routine(void *arg)
 {
-	t_philo_data	*philo_data;
-	long long		start_time;
+	t_philo_data *philo_data;
+	long long start_time;
 
 	philo_data = (t_philo_data *)arg;
 	pthread_mutex_lock(&philo_data->dining->sync);
 	philo_data->dining->sync_n++;
 	pthread_mutex_unlock(&philo_data->dining->sync);
-	while (philo_data->dining->sync_n
-		!= (int)philo_data->dining->number_of_philos)
+	while (philo_data->dining->sync_n != (int)philo_data->dining->number_of_philos)
 	{
 		usleep(0);
 	}
@@ -33,10 +32,10 @@ static void	*philo_routine(void *arg)
 	return (NULL);
 }
 
-t_fork	*get_forks(int n_of_forks)
+t_fork *get_forks(int n_of_forks)
 {
-	t_fork	*forks;
-	int		i;
+	t_fork *forks;
+	int i;
 
 	i = 0;
 	if (n_of_forks == 1)
@@ -51,24 +50,23 @@ t_fork	*get_forks(int n_of_forks)
 				pthread_mutex_destroy(&forks[i--].fork);
 			free(forks);
 			return (NULL);
-		}
+		};
 		printf("fork %i\n", i);
 		forks->is_in_use = 0;
 	}
 	return (forks);
 }
 
-pthread_t	*get_philos(t_dining_data *dining)
+pthread_t *get_philos(int n_of_philos, t_dining_data *dining)
 {
-	pthread_t		*philos;
-	t_philo_data	*philo_data;
-	int				n_of_philos;
-	int				i;
+	pthread_t *philos;
+	t_philo_data *philo_data;
+	int i;
 
-	n_of_philos = dining->number_of_philos;
 	i = 0;
 	philos = malloc(sizeof(pthread_t) * n_of_philos);
 	philo_data = malloc(sizeof(t_philo_data) * n_of_philos);
+
 	while (i < n_of_philos)
 	{
 		philo_data[i].id = i + 1;
@@ -82,24 +80,25 @@ pthread_t	*get_philos(t_dining_data *dining)
 		pthread_create(philos, NULL, philo_routine, (void *)&philo_data[i]);
 		i++;
 	}
+
 	return (philos);
 }
 
-int	get_died(t_dining_data *dining)
+int get_died(t_dining_data *dining)
 {
 	pthread_mutex_lock(&dining->get_enough);
-	if (dining->is_enough == TRUE)
+	if (dining->is_enough == true)
 	{
 		pthread_mutex_unlock(&dining->get_enough);
-		return (TRUE);
+		return (true);
 	}
 	pthread_mutex_unlock(&dining->get_enough);
-	return (FALSE);
+	return (false);
 }
 
-long long	get_time(long long start_time)
+long long get_time(long long start_time)
 {
-	struct timeval	tv;
+	struct timeval tv;
 
 	if (gettimeofday(&tv, NULL))
 		return (0);
