@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_20250312011109.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 12:27:03 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/12 01:11:09 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/21 08:57:19 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ void *philo_routine(void *arg)
 
 	philo_data = (t_philo_data *)arg;
 	is_unlocked = 0;
-	pthread_mutex_lock(&philo_data->dining->sync);
-	philo_data->dining->sync_n++;
-	pthread_mutex_unlock(&philo_data->dining->sync);
-	while(philo_data->dining->sync_n != philo_data->dining->number_of_philos)
+	pthread_mutex_lock(&philo_data->dining->sync_m);
+	philo_data->dining->sync_m++;
+	pthread_mutex_unlock(&philo_data->dining->sync_m);
+	while(philo_data->dining->sync_m != philo_data->dining->number_of_philos)
 	{
 		usleep(1);
 	}
@@ -65,7 +65,7 @@ pthread_mutex_t *get_forks(int n_of_forks)
 	return (forks);
 }
 
-pthread_t	*get_philos(int n_of_philos, t_dining_data *dining)
+pthread_t	*init_philos(int n_of_philos, t_dining_data *dining)
 {
 	pthread_t		*philos;
 	t_philo_data	*philo_data;
@@ -101,9 +101,9 @@ int main(int ac, char **av)
 	{
 		return(input_error("Invalid arguments"));
 	}
-	dining->sync_n = 0;
+	dining->sync_m = 0;
 	dining->forks = get_forks(dining->number_of_philos);
-	philos = get_philos(dining->number_of_philos, dining);
+	philos = init_philos(dining->number_of_philos, dining);
 	i = 0;
 	while (i < dining->number_of_philos)
 		pthread_join(philos[i++], NULL);

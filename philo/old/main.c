@@ -12,23 +12,54 @@
 
 #include "philo.h"
 
+static t_dining_data	*init_dining(int ac, char **av)
+{
+	t_dining_data	*dining;
+
+	dining = malloc(sizeof(t_dining_data));
+	if (!dining)
+		return (NULL);
+	if (input_parser(ac, av, dining) == INVALID_INPUT)
+	{
+		input_error("Invalid arguments");
+		return(NULL);
+	}
+	dining->sync = 0;
+	dining->is_enough = FALSE;
+	dining->forks = get_forks(dining->number_of_philos);
+	dining->start_time = get_time(0);
+	return (dining);
+}
+
+static int	init_mutexes(t_dining_data *dining)
+{
+	if (pthread_mutex_init(&dining->sync_m, NULL) != 0
+		|| pthread_mutex_init(&dining->is_enough_m, NULL) != 0
+		|| pthread_mutex_init(&dining->print, NULL) != 0
+	)
+	{
+		write(1, "Error\n", 6);
+			pthread_mutex_destroy(&dining->sync_m);
+			pthread_mutex_destroy(&dining->is_enough_m);
+			pthread_mutex_destroy(&dining->print);
+		return (FALSE);
+	};
+	return (TRUE);
+}
+
 static void	destroy_mutexes(t_dining_data *dining)
 {
 	unsigned int	i;
 
 	i = 0;
-	pthread_mutex_destroy(&dining->sync);
+	pthread_mutex_destroy(&dining->sync_m);
 	pthread_mutex_destroy(&dining->is_enough_m);
-	pthread_mutex_destroy(&dining->print_m);
+	pthread_mutex_destroy(&dining->print);
 	while (i < dining->number_of_philos)
-	{
-		pthread_mutex_destroy(&dining->forks[i].fork);
-		pthread_mutex_destroy(&dining->forks[i].is_in_use_m);
-		i++;
-	}
+		pthread_mutex_destroy(&dining->forks[i++].fork);
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
 	t_dining_data	*dining;
 	pthread_t		*philos;

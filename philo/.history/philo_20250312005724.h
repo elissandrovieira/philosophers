@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   philo_20250312005724.h                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 05:45:44 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/12 00:57:24 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/21 04:51:46 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ typedef struct  s_dining_data
 	unsigned int	time_to_sleep;
 	int				number_of_meals;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	sync;
-	int				sync_n;
+	pthread_mutex_t	sync_m;
+	int				sync_m;
 }	t_dining_data;
 
 

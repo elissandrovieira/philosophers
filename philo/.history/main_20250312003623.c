@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_20250312003623.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 12:27:03 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/12 00:36:23 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/21 08:57:19 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ pthread_mutex_t *get_forks(int n_of_forks)
 	return (forks);
 }
 
-pthread_t	*get_philos(int n_of_philos, pthread_mutex_t *forks)
+pthread_t	*init_philos(int n_of_philos, pthread_mutex_t *forks)
 {
 	pthread_t		*philos;
 	t_philo_data	*philo_data;
@@ -72,6 +72,6 @@ int main(int ac, char **av)
 		return(input_error("Invalid arguments"));
 	}
 	forks = get_forks(dining->number_of_philos);
-	philos = get_philos(dining->number_of_philos, forks);
+	philos = init_philos(dining->number_of_philos, forks);
 	return(0);
 }

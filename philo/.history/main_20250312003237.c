@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_20250312003237.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 12:27:03 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/12 00:32:37 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/21 08:57:19 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include "philo.h"
 
-pthread_t	*get_philos(int n_of_philos, pthread_mutex_t *forks)
+pthread_t	*init_philos(int n_of_philos, pthread_mutex_t *forks)
 {
 	pthread_t		*philos;
 	t_philo_data	*philo_data;
