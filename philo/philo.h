@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 05:45:44 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/24 18:59:49 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/24 19:55:08 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,18 @@
 
 # define INVALID_INPUT -1
 
-# define RESET	"\033[0m"
-# define RED	"\033[31m"
-# define GREEN	"\033[32m"
-# define BLUE	"\033[34m"
-# define TRUE	1
-# define FALSE	0
+# define RESET "\033[0m"
+# define RED "\033[31m"
+# define GREEN "\033[32m"
+# define BLUE "\033[34m"
+# define TRUE 1
+# define FALSE 0
 
 # include <pthread.h>
-# include <stdlib.h>
-# include <unistd.h>
 # include <stdio.h>
+# include <stdlib.h>
 # include <sys/time.h>
+# include <unistd.h>
 
 typedef struct s_fork
 {
@@ -34,7 +34,7 @@ typedef struct s_fork
 	pthread_mutex_t	fork;
 	pthread_mutex_t	is_in_use_m;
 	unsigned int	is_in_use;
-}	t_fork;
+}					t_fork;
 
 typedef struct s_dining_data
 {
@@ -56,7 +56,7 @@ typedef struct s_dining_data
 	t_fork			*forks;
 	long long		start_time;
 	pthread_mutex_t	start_time_m;
-}	t_dining_data;
+}					t_dining_data;
 
 typedef struct s_philo_data
 {
@@ -66,47 +66,56 @@ typedef struct s_philo_data
 	t_fork			*fork_l;
 	long long		last_meal_time;
 	t_dining_data	*dining;
-}	t_philo_data;
+}					t_philo_data;
 
 typedef struct s_mutex_order
 {
-	t_fork	*first;
-	t_fork	*second;
-}	t_mutex_order;
+	t_fork			*first;
+	t_fork			*second;
+}					t_mutex_order;
+
+typedef struct s_monitor_data
+{
+	long long		start_time;
+	int				number_of_philos;
+	int				number_of_meals;
+}					t_monitor_data;
 
 typedef struct s_thread_list
 {
 	pthread_t		*philos;
 	pthread_t		*monitor;
 	t_philo_data	*philo_data;
-}	t_thread_list;
+}					t_thread_list;
 
-int				ft_atoi(const char *nptr);
-int				input_error(char *string);
-int				input_parser(int ac, char **av, t_dining_data	*dining);
-t_fork			*init_forks(int n_of_forks);
-t_dining_data	*init_dining(int ac, char **av);
-int				init_mutexes(t_dining_data *dining);
-t_thread_list	*init_philos(t_dining_data *dining);
-long long		get_time(long long start_time);
+int					ft_atoi(const char *nptr);
+int					input_error(char *string);
+int					input_parser(int ac, char **av, t_dining_data *dining);
+t_fork				*init_forks(int n_of_forks);
+t_dining_data		*init_dining(int ac, char **av);
+int					init_mutexes(t_dining_data *dining);
+t_thread_list		*init_philos(t_dining_data *dining);
+long long			get_time(long long start_time);
 
-void			*philo_routine(void *arg);
-void			*monitor_routine(void *arg);
+void				*philo_routine(void *arg);
+void				*monitor_routine(void *arg);
 
+void				time_to_act(int action);
+int					get_died(t_dining_data *dining);
+int					take_forks(t_philo_data *philo_data, long long start_time);
+void				leave_forks(t_philo_data *philo_data);
+t_mutex_order		mutex_order(t_fork *first, t_fork *second);
+void				print_message(t_philo_data *philo_data,
+						long long start_time, char *message);
 
-void			time_to_act(int action);
-int				get_died(t_dining_data *dining);
-int				take_forks(t_philo_data *philo_data, long long start_time);
-void			leave_forks(t_philo_data *philo_data);
-t_mutex_order	mutex_order(t_fork *first, t_fork *second);
-void			print_message(t_philo_data *philo_data,
-	long long start_time, char *message);
+int					set_died(t_philo_data *philo_data, long long start_time);
+int					set_thinking(t_philo_data *philo_data,
+						long long start_time);
+int					set_eating(t_philo_data *philo_data, long long start_time);
+int					set_sleeping(t_philo_data *philo_data,
+						long long start_time);
 
-int				set_died(t_philo_data *philo_data, long long start_time);
-int				set_thinking(t_philo_data *philo_data, long long start_time);
-int				set_eating(t_philo_data *philo_data, long long start_time);
-int				set_sleeping(t_philo_data *philo_data, long long start_time);
-
-void			destroy_mutexes(t_dining_data *dining);
-void	destroy_allocs(t_dining_data *dining, t_thread_list *threads);
+void				destroy_mutexes(t_dining_data *dining);
+void				destroy_allocs(t_dining_data *dining,
+						t_thread_list *threads);
 #endif

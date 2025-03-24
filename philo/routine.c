@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 15:18:36 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/24 19:06:30 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/24 19:54:33 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@ void	*philo_routine(void *arg)
 		handle_one(philo_data, start_time);
 		return (NULL);
 	}
-	if ((philo_data->id % 2) == 0 || ((philo_data->id %2) != 0
-		&& philo_data->id == number_of_philos))
+	if ((philo_data->id % 2) == 0 || ((philo_data->id % 2) != 0
+			&& philo_data->id == number_of_philos))
 	{
 		print_message(philo_data, start_time, "is thinking");
 		time_to_act(philo_data->dining->time_to_eat / 2);
@@ -79,30 +79,40 @@ void	*philo_routine(void *arg)
 	return (NULL);
 }
 
+static t_monitor_data	take_monitor_data(t_philo_data *philo_data)
+{
+	t_monitor_data	monitor_data;
+
+	pthread_mutex_lock(&philo_data->dining->start_time_m);
+	monitor_data.start_time = philo_data->dining->start_time;
+	pthread_mutex_unlock(&philo_data->dining->start_time_m);
+	pthread_mutex_lock(&philo_data->dining->number_of_philos_m);
+	monitor_data.number_of_philos = philo_data->dining->number_of_philos;
+	pthread_mutex_unlock(&philo_data->dining->number_of_philos_m);
+	pthread_mutex_lock(&philo_data->dining->number_of_meals_m);
+	monitor_data.number_of_meals = philo_data->dining->number_of_meals;
+	pthread_mutex_unlock(&philo_data->dining->number_of_meals_m);
+	return (monitor_data);
+}
+
 void	*monitor_routine(void *arg)
 {
 	t_philo_data	*philo_data;
 	int				i;
-	long long		start_time;
-	int				number_of_philos;
+	t_monitor_data	monitor_data;
 
 	philo_data = (t_philo_data *)arg;
+	monitor_data = take_monitor_data(philo_data);
 	i = 0;
-	pthread_mutex_lock(&philo_data->dining->start_time_m);
-	start_time = philo_data->dining->start_time;
-	pthread_mutex_unlock(&philo_data->dining->start_time_m);
-	pthread_mutex_lock(&philo_data->dining->number_of_philos_m);
-	number_of_philos = philo_data->dining->number_of_philos;
-	pthread_mutex_unlock(&philo_data->dining->number_of_philos_m);
-	while(get_died(philo_data->dining) == FALSE )
+	while (get_died(philo_data->dining) == FALSE
+		&& monitor_data.number_of_meals == INVALID_INPUT)
 	{
-		if (set_died(&philo_data[i], start_time))
+		if (set_died(&philo_data[i], monitor_data.start_time))
 			return (NULL);
-		if (i + 1 == number_of_philos)
+		if (i + 1 == monitor_data.number_of_philos)
 			i = 0;
 		else
 			i++;
-		usleep(600);
 	}
 	return (NULL);
 }

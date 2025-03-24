@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 14:53:47 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/24 18:44:33 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/24 19:54:38 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ t_fork	*init_forks(int n_of_forks)
 			{
 				pthread_mutex_destroy(&forks[i--].fork);
 				pthread_mutex_destroy(&forks[i--].is_in_use_m);
-
 			}
 			free(forks);
 			return (NULL);
@@ -69,8 +68,7 @@ int	init_mutexes(t_dining_data *dining)
 		|| pthread_mutex_init(&dining->start_time_m, NULL) != 0
 		|| pthread_mutex_init(&dining->time_to_die_m, NULL) != 0
 		|| pthread_mutex_init(&dining->time_to_eat_m, NULL) != 0
-		|| pthread_mutex_init(&dining->time_to_sleep_m, NULL) != 0
-	)
+		|| pthread_mutex_init(&dining->time_to_sleep_m, NULL) != 0)
 	{
 		pthread_mutex_destroy(&dining->sync_m_m);
 		pthread_mutex_destroy(&dining->is_enough_m);
