@@ -6,27 +6,27 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:49:28 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/21 08:38:14 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/22 15:31:24 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int get_died(t_dining_data *dining)
+int	get_died(t_dining_data *dining)
 {
 	pthread_mutex_lock(&dining->is_enough_m);
-	if (dining->is_enough == true)
+	if (dining->is_enough == TRUE)
 	{
 		pthread_mutex_unlock(&dining->is_enough_m);
-		return (true);
+		return (TRUE);
 	}
 	pthread_mutex_unlock(&dining->is_enough_m);
-	return (false);
+	return (FALSE);
 }
 
-long long get_time(long long start_time)
+long long	get_time(long long start_time)
 {
-	struct timeval tv;
+	struct timeval	tv;
 
 	if (gettimeofday(&tv, NULL))
 		return (0);

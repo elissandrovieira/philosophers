@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 05:45:44 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/21 04:51:46 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/22 12:33:03 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ typedef struct  s_dining_data
 	unsigned int	time_to_sleep;
 	int				number_of_meals;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	sync_m;
-	int				sync_m;
+	pthread_mutex_t	sync_m_m;
+	int				sync_m_m;
 }	t_dining_data;
 
 

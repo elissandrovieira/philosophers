@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 12:27:03 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/21 08:57:19 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/22 15:31:13 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include "philo.h"
 
-pthread_mutex_t *get_forks(int n_of_forks)
+pthread_mutex_t *init_forks(int n_of_forks)
 {
 	pthread_mutex_t	*forks;
 	int				i;

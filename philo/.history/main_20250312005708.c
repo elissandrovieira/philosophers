@@ -6,7 +6,7 @@
 /*   By: eteofilo <eteofilo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 12:27:03 by eteofilo          #+#    #+#             */
-/*   Updated: 2025/03/21 08:57:19 by eteofilo         ###   ########.fr       */
+/*   Updated: 2025/03/22 15:31:13 by eteofilo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void *philo_routine(void *arg)
 
 	philo_data = (t_philo_data *)arg;
 	is_unlocked = 0;
-	pthread_mutex_lock(philo_data->dining->sync_m)
+	pthread_mutex_lock(philo_data->dining->sync_m_m)
 	if((philo_data->id % 2) != 0)
 		usleep(philo_data->dining->time_to_eat / 2);
 	pthread_mutex_lock(philo_data->fork_r);
@@ -38,7 +38,7 @@ void *philo_routine(void *arg)
 	return(NULL);
 }
 
-pthread_mutex_t *get_forks(int n_of_forks)
+pthread_mutex_t *init_forks(int n_of_forks)
 {
 	pthread_mutex_t	*forks;
 	int				i;
@@ -95,7 +95,7 @@ int main(int ac, char **av)
 	{
 		return(input_error("Invalid arguments"));
 	}
-	dining->forks = get_forks(dining->number_of_philos);
+	dining->forks = init_forks(dining->number_of_philos);
 	philos = init_philos(dining->number_of_philos, dining);
 	i = 0;
 	while (i < dining->number_of_philos)
