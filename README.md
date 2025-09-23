@@ -45,3 +45,5 @@ Example:
 ```bash
 ./philo 5 800 200 200 7
 ```
+
+Thank you for checking out my **Philosophers** project. This experience greatly improved my understanding of concurrency and multithreading in C!
